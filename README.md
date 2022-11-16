@@ -24,8 +24,8 @@ The standard plugin comes with systems and components that you can use in your a
 
 ## Types
 
-```json
-ResourceMessage
+```js
+// ResourceMessage
 {
    "diff": {
         // updates the entity's resource
