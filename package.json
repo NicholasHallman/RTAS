@@ -1,0 +1,26 @@
+{
+  "name": "real-time-application-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/backend/index.js",
+    "demo": "web-dev-server --node-resolve --app-index demo/index.html --open"
+  },
+  "author": "Nicholas Hallman",
+  "license": "ISC",
+  "dependencies": {
+    "@web/dev-server": "^0.1.35",
+    "bitecs": "^0.3.38",
+    "koa": "^2.13.4",
+    "koa-route": "^3.2.0",
+    "koa-session": "^6.2.0",
+    "koa-websocket": "^7.0.0",
+    "uuidv4": "^6.2.13"
+  },
+  "devDependencies": {
+    "lit": "^2.4.1"
+  }
+}
