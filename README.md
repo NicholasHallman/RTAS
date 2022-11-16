@@ -1,6 +1,6 @@
 # Realtime Applications Service (RTAS)
 
-![bouncing balls example](https://github.com/NicholasHallman/rtas/blob/main/resources/realtime-sim.png)
+![bouncing balls example](https://github.com/NicholasHallman/RTAS/blob/main/resources/realtime-sim.gif)
 
 RTAS is a platform for creating realtime web applications easily and quickly with WebSockets backed by the Entity Component Systems bitecs.
 
