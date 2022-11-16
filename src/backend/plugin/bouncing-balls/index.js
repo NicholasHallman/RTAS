@@ -27,7 +27,7 @@ export default class BouncingBalls extends RTASPlugin {
         Bounds.height[stageEid] = 500;
 
         // create balls
-        for(let i = 0; i < 100; i++) {
+        for(let i = 0; i < 10; i++) {
             const eid = addEntity(this.world);
             addComponent(this.world, Position, eid);
             addComponent(this.world, Heading, eid);
