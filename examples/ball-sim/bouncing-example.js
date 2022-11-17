@@ -1,6 +1,6 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
-import { RTAS } from '../src/frontend/index.js';
+import { RTAS } from '../../../src/frontend/index.js';
 
 class BouncingBalls extends LitElement {
 

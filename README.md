@@ -42,18 +42,9 @@ The standard plugin comes with systems and components that you can use in your a
 
 The bouncing-balls and cursor-example plugins demonstrate how to use the service lifecycle functions and example systems. 
 
-Server examples can be run like so
-
- - `npm run start -- --app cursor-example`  
- - `npm run start -- --app bouncing-example`
-
-then modify the demo/index.html file to point to the component that matches the example.
-
- - for cursor-example add `<cursor-manager></cursor-manager>`
- - for bouncing-example add `<bouncing-balls></bouncing-balls>`
-
-
-then, in a new terminal window, run: `npm run demo`
+You can start the client side, and server examples using
+ - `npm run example:ball`
+ - `npm run example:cursor`
 
 ## Reconnection
 
@@ -61,5 +52,5 @@ When a client disconnects from the service the core plugin will serialize their 
 
 # Frontend Library
 
-This package has a helper library you can use on the client side to communicate with RTAS. The library is in `./src/frontend/index.js` and the library is used by `./demo/bouncing-example.js` and `./demo/cursor-example.js`
+This package has a helper library you can use on the client side to communicate with RTAS. The library is in `./src/frontend/index.js` and the library is used by `./examples/ball-sim/bouncing-example.js` and `./examples/cursor/cursor-example.js`
 

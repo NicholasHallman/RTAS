@@ -1,5 +1,5 @@
 import { css, html, LitElement, nothing } from 'lit';
-import { RTAS } from '../src/frontend/index.js';
+import { RTAS } from '../../../src/frontend/index.js';
 
 class ConnectionManager extends LitElement {
 

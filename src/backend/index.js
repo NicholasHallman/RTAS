@@ -9,10 +9,10 @@ koa.use(session(koa));
 
 // run a set of plugins depending on the arguments
 const appIndex = process.argv.indexOf("--app");
-const appName = process.argv[appIndex + 1];
+const appPath = process.argv[appIndex + 1];
 
 const rtas = new RTAS();
-rtas.loadPlugin(appName);
+rtas.loadPlugin(appPath);
 
 
 koa.ws.use(function(ctx, next) {

@@ -1,10 +1,10 @@
 import { Color, Position } from './components.js';
-import { Networked } from '../core/components.js';
+import { Networked } from '../../../src/backend/plugin/core/components.js';
 import { movementSystem } from './systems.js';
-import { RTASPlugin } from '../../plugin.js';
-import { addComponent, addEntity } from 'bitecs';
+import { RTASPlugin } from '../../../src/backend/plugin.js';
+import { addComponent } from 'bitecs';
 import { colors } from './consts.js';
-import { RESOURCE_UPDATE } from '../core/symbols.js'
+import { RESOURCE_UPDATE } from '../../../src/backend/plugin/core/symbols.js'
 
 export default class LiveCursor extends RTASPlugin {
 

@@ -1,7 +1,7 @@
 import { addComponent, addEntity } from "bitecs";
-import { RTASPlugin } from "../../plugin.js";
-import { Networked } from "../core/components.js";
-import { TICK } from "../core/symbols.js";
+import { RTASPlugin } from "../../../src/backend/plugin.js";
+import { Networked } from "../../../src/backend/plugin/core/components.js";
+import { TICK } from "../../../src/backend/plugin/core/symbols.js";
 import { Bounds, Heading, Position, Speed } from "./components.js";
 import { moveBalls } from "./systems.js";
 

@@ -13,8 +13,8 @@ export class RTAS {
         this.plugin;
     }
 
-    async loadPlugin(pluginName) {
-        const Plugin = (await import(`./plugin/${pluginName}/index.js`)).default;
+    async loadPlugin(pluginPath) {
+        const Plugin = (await import(pluginPath)).default;
         this.plugin = new Plugin(this.world);
         this.plugin.start();
         this.pipeline = pipe(...this.plugin.pipeline);

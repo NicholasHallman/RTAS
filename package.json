@@ -7,7 +7,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./src/backend/index.js",
-    "demo": "web-dev-server --node-resolve --app-index demo/index.html --open"
+    "example:server:cursor": "node ./src/backend/index.js --app ../../examples/cursor/cursor-example/index.js",
+    "example:web:cursor": "web-dev-server --node-resolve --app-index ./examples/cursor/index.html --open",
+    "example:cursor": "start npm run example:server:cursor && start npm run example:web:cursor",
+    "example:server:ball": "node ./src/backend/index.js --app ../../examples/ball-sim/plugin/index.js",
+    "example:web:ball": "web-dev-server --node-resolve --app-index ./examples/ball-sim/index.html --open",
+    "example:ball": "start npm run example:server:ball && start npm run example:web:ball",
+    "demo": "web-dev-server --node-resolve --app-inde`1x demo/index.html --open"
   },
   "author": "Nicholas Hallman",
   "license": "ISC",
