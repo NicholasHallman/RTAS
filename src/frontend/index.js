@@ -1,14 +1,28 @@
-// Real Time Applications Service frontend interface.
+import { DESERIALIZE_MODE } from "bitecs";
+import { addComponent, createWorld, defineComponent, defineDeserializer, registerComponent, Types } from "bitecs";
+import { _base64ToArrayBuffer } from './helpers.js';
 
+// Real Time Applications Service frontend interface.
 const wait = async (delay) => new Promise(res => setTimeout(res, delay));
 
 export class RTAS {
-    constructor(url) {
+    constructor(url, updateCallback) {
         this.url = url;
         this.messageHandlers = {};
         this.connection;
         this.connected = false;
         this.eid;
+        this.netComponents = {};
+        this.updateCallback = updateCallback;
+    }
+
+    async waitForWorld() {
+        if(this.netWorld !== undefined) return this.netWorld;
+        new Promise((res, rej) => this.worldDef = {res, rej})
+    }
+
+    get world() {
+        return this.netWorld;
     }
 
     async handleOpen(returnConnection) {
@@ -29,7 +43,10 @@ export class RTAS {
             registerBody.eid = this.eid;
         }
 
-        this.eid = await this.send("register", registerBody);
+        const result = await this.send("register", registerBody);
+        this.eid = result.eid;
+        this.schemaDefinitions = result.schemas;
+        this.createNetworkWorld();
     }
 
     handleMessages(e) {
@@ -100,6 +117,35 @@ export class RTAS {
     
     async setResource(full) {
         return this.send('resource', {full});
+    }
+
+    /* ecs stuff */
+
+    createNetworkWorld() {
+        this.netWorld = createWorld();
+        if(this.worldDef !== undefined) this.worldDef.res(this.netWorld);
+        this.schemaDefinitions.forEach(schemaObj => this.addNetworkComponent(schemaObj));
+        this.deserializer = defineDeserializer(Object.values(this.netComponents));
+    }
+
+    addNetworkComponent(schemaObj) {
+        const {name, schema} = schemaObj;
+        const Comp = defineComponent(schema);
+        this.netComponents[name] = Comp;
+    }
+
+    getComponent(name) {
+        return this.netComponents[name];
+    }
+
+    update(result) {
+        result.map(packetString => {
+            const packet = _base64ToArrayBuffer(packetString);
+            this.deserializer(this.netWorld, packet, DESERIALIZE_MODE.MAP);
+        })
+        if(this.updateCallback) {
+            this.updateCallback()
+        }
     }
 }
 

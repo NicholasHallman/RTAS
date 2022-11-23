@@ -1,3 +1,4 @@
+import { defineQuery, pipe } from 'bitecs';
 import { css, html, LitElement, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import { RTAS } from '../../../src/frontend/index.js';
@@ -25,8 +26,7 @@ class BouncingBalls extends LitElement {
 
     constructor() {
         super();
-        this.rtas = new RTAS('localhost:3000');
-        this.rtas.update = this.propUpdate.bind(this);
+        this.rtas = new RTAS('localhost:3000', this.worldUpdate.bind(this));
         this.hasFirstUpdated = false;
     }
 
@@ -35,8 +35,11 @@ class BouncingBalls extends LitElement {
         await this.rtas.connect();
     }
 
-    propUpdate(data) {
-        this.data = data;
+    async worldUpdate() {
+        this.Position = this.rtas.getComponent("Position");
+        this.posQuery = defineQuery([this.Position])
+        
+        this.requestUpdate();
     }
 
     firstUpdated() {
@@ -45,23 +48,29 @@ class BouncingBalls extends LitElement {
         this.ctx = this.shadowRoot.querySelector('canvas').getContext('2d');
     }
 
-    updateCanvas() {
-        if(this.ctx === undefined || this.data === undefined) return;
+    updateCanvas(world) {
+        if(this.ctx === undefined || world === undefined) return;
+
         this.ctx.clearRect(0, 0, 500, 500);
-        
-        Object.entries(this.data).forEach(([eid, compList]) => {
+
+        const eids = this.posQuery(world);
+
+        eids.forEach(eid => {
+            const x = this.Position.x[eid];
+            const y = this.Position.y[eid];
+
             this.ctx.beginPath();
-            const pos = compList[0];
-            this.ctx.arc(pos.x, pos.y, 5, 0, 2 * Math.PI);
+            this.ctx.arc(x, y, 5, 0, 2 * Math.PI);
             this.ctx.fillStyle = 'blue';
             this.ctx.fill();
             this.ctx.stroke();
         })
+    
     }
 
     shouldUpdate() {
         super.shouldUpdate();
-        this.updateCanvas();
+        this.updateCanvas(this.rtas.world);
         return !this.hasFirstUpdated;
     }
 

@@ -13,7 +13,7 @@
     "example:server:ball": "node ./src/backend/index.js --app ../../examples/ball-sim/plugin/index.js",
     "example:web:ball": "web-dev-server --node-resolve --app-index ./examples/ball-sim/index.html --open",
     "example:ball": "start npm run example:server:ball && start npm run example:web:ball",
-    "demo": "web-dev-server --node-resolve --app-inde`1x demo/index.html --open"
+    "demo": "web-dev-server --node-resolve --app-index demo/index.html --open"
   },
   "author": "Nicholas Hallman",
   "license": "ISC",

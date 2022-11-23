@@ -1,5 +1,5 @@
 import { createWorld, pipe } from 'bitecs';
-import { serializeAndSend } from './plugin/core/systems.js';
+import { serializeNetworkedEntities, sendPackets } from './plugin/core/systems.js';
 import route from 'koa-route';
 import { RESOURCE_UPDATE, TICK } from './plugin/core/symbols.js';
 
@@ -7,7 +7,7 @@ import { RESOURCE_UPDATE, TICK } from './plugin/core/symbols.js';
 export class RTAS {
     constructor() {
         this.world = createWorld();
-        this.world.room = {};
+        this.room = {};
         this.world.rtas = this;
         this.pipeline;
         this.plugin;
@@ -49,34 +49,53 @@ export class RTAS {
         const eid = this.plugin.connect(restoreEid);
         console.log(`connected ${eid}`)
         ctx.session.eid = eid;
-        this.world.room[eid] = ctx.websocket;
+        this.room[eid] = ctx.websocket;
+        const schemas = this.plugin.afterConnect();
     
         ctx.websocket.send(JSON.stringify({
-            result: eid,
+            result: {
+                eid,
+                schemas
+            },
             action: "register",
             id: messageId
         }));
+
     }
     
     handleUnRegister(ctx) {
         const { eid } = ctx.session;
         console.log(`disconnecting ${eid}`);
         this.plugin.disconnect(eid);
-        delete this.world.room[eid];
+        delete this.room[eid];
     }
 
     run() {
         this.pipeline(this.world);
-        pipe(serializeAndSend)(this.world);
+        pipe(serializeNetworkedEntities, sendPackets)(this.world);
+    }
+
+    broadcastClients(eids, data) {
+        eids.forEach(eid => {
+            const ws = this.room[eid];
+            ws.send(JSON.stringify({
+                action: "update",
+                result: data
+            }))
+        })
     }
 
     broadcast(data) {
-        Object.entries(this.world.room).forEach(([id, ws]) => {
+        Object.entries(this.room).forEach(([eid, ws]) => {
             ws.send(JSON.stringify({
                 action: "update",
                 result: data
             }));
         });
+    }
+
+    sendToConnected() {
+
     }
 
     middleware() {

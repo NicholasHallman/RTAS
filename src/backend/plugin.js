@@ -1,12 +1,16 @@
 import { defineSerializer, defineDeserializer, removeEntity, addEntity } from "bitecs";
-
+import { TYPES } from "./consts.js";
+import { Networked } from "./plugin/core/components.js";
 
 export class RTASPlugin {
 
     constructor(world) {
         this.world = world;
         this.world.resources = {};
+        this.registeredNetworkComponents = new Map();
         this.entityRegistrationCache = {};
+        this.schemasToSend = [];
+        this.debounced = {};
     }
 
     get resources() {
@@ -32,6 +36,10 @@ export class RTASPlugin {
         const newEid = addEntity(this.world);
         this.resources[newEid] = {};
         return newEid;
+    }
+
+    afterConnect() {
+        return [...this.registeredNetworkComponents].map(([comp]) => this.generateComponentSchema(comp));
     }
 
     restore(eid) {
@@ -92,6 +100,64 @@ export class RTASPlugin {
             this._cacheComponentMapSymbol = Object.getOwnPropertySymbols(this.world).find(symbol => symbol.toString() === "Symbol(componentMap)");
         }
         return this.world[this._cacheComponentMapSymbol];
+    }
+
+    /*
+    options: {
+        groupMask: bin`00000000`,
+        components: [Position, Speed]
+    }
+    */
+
+    addNetworkedComponents(eid, options) {
+        
+        // map each component to an ID
+        Networked.componentIds[eid].set(
+            options.components
+                .map(obj => this.getComponentId(obj))
+        );
+        // set the group mask
+        Networked.groupMask[eid] = options.groupMask;
+    }
+
+    /*
+    options: {
+        "Position": Position
+    }
+    */
+    registerNetworkedComponents(options) {
+        Object.entries(options)
+            .forEach(([name, component]) => this.registerNetworkedComponent(component, name));
+    }
+
+    registerNetworkedComponent(Component, name) {
+        this.registeredNetworkComponents.set(Component, name);
+        this.sendComponentSchema(this.generateComponentSchema(Component));
+    }
+
+    sendComponentSchema(schema) {
+        this.schemasToSend.push(schema);
+        if(this.debounced["sendComponentSchema"] !== undefined) 
+            clearTimeout(this.debounced["sendComponentSchema"]);
+
+        this.debounced["sendComponentSchema"] = setTimeout(() => {
+            this.world.rtas.broadcast(this.schemasToSend);
+            this.debounced["sendComponentSchema"] = undefined;
+        }, 20)
+    }
+
+    generateComponentSchema(Component) {
+        
+        const schema = Object.keys(Component).reduce((acc, key) => {
+            const typeName = TYPES[Component[key].constructor.name];
+            acc[key] = typeName;
+            return acc;
+        }, {});
+
+        return {
+            name: this.registeredNetworkComponents.get(Component),
+            schema
+        }
     }
 
 }
