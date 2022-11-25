@@ -1,4 +1,5 @@
 import { defineQuery } from "bitecs"
+import { threadedSystem } from "../../../src/backend/threaded.js";
 import { Bounds, Heading, Position, Speed } from "./components.js"
 
 const ballQuery = defineQuery([Position, Heading, Speed]);
@@ -45,4 +46,11 @@ export const moveBalls = world => {
         Heading.ax[eid] = ax;
         Heading.ay[eid] = ay;
     }
+
+    return world;
 }
+
+export const testThread = threadedSystem([Position, Heading, Speed], (eid, comps) => {
+    const [Position, Heading, Speed] = comps;
+    Position.x[eid] = 250;
+});

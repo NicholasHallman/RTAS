@@ -75,13 +75,18 @@ export class RTAS {
         pipe(serializeNetworkedEntities, sendPackets)(this.world);
     }
 
-    broadcastClients(eids, data) {
+    broadcastClients(eids, data, raw=false) {
         eids.forEach(eid => {
             const ws = this.room[eid];
-            ws.send(JSON.stringify({
-                action: "update",
-                result: data
-            }))
+            if(!raw) {
+                ws.send(JSON.stringify({
+                    action: "update",
+                    result: data
+                }))
+            } else {
+                ws.send(data);
+            }
+            
         })
     }
 

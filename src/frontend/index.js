@@ -50,6 +50,12 @@ export class RTAS {
     }
 
     handleMessages(e) {
+
+        if(e.data.constructor.name === "Blob") {
+            this.rawUpdate(e.data);
+            return;
+        }
+
         const {id, result, action} = JSON.parse(e.data);
         if(action === 'update') {
             this.update(result);
@@ -138,11 +144,20 @@ export class RTAS {
         return this.netComponents[name];
     }
 
-    update(result) {
+    async update(result) {
         result.map(packetString => {
             const packet = _base64ToArrayBuffer(packetString);
             this.deserializer(this.netWorld, packet, DESERIALIZE_MODE.MAP);
         })
+        if(this.updateCallback) {
+            this.updateCallback()
+        }
+    }
+
+    async rawUpdate(blob) {
+        const buffer = await blob.arrayBuffer();
+        this.deserializer(this.netWorld, buffer, DESERIALIZE_MODE.MAP);
+
         if(this.updateCallback) {
             this.updateCallback()
         }

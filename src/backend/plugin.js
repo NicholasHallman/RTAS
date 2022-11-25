@@ -11,6 +11,7 @@ export class RTASPlugin {
         this.entityRegistrationCache = {};
         this.schemasToSend = [];
         this.debounced = {};
+        this.networkedSerializers = {};
     }
 
     get resources() {
@@ -118,6 +119,8 @@ export class RTASPlugin {
         );
         // set the group mask
         Networked.groupMask[eid] = options.groupMask;
+
+        this.networkedSerializers[eid] = defineSerializer(options.components);
     }
 
     /*

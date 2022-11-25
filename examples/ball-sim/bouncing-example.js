@@ -7,19 +7,19 @@ class BouncingBalls extends LitElement {
 
     static get properties() {
         return {
-            data: { attribute: false }
+            data: { attribute: false },
+            color: { attribute: true }
         }
     }
 
     static get styles() {
         return css`
-            .ball {
+            :host {
                 display: block;
-                position: absolute;
-                border-radius: 5px;
-                width: 10px;
-                height: 10px;
-                background-color: blue;
+                width: 500px;
+                border: 1px solid;
+                float:left;
+                margin-right: 20px;
             }
         `;
     }
@@ -35,7 +35,7 @@ class BouncingBalls extends LitElement {
         await this.rtas.connect();
     }
 
-    async worldUpdate() {
+    worldUpdate() {
         this.Position = this.rtas.getComponent("Position");
         this.posQuery = defineQuery([this.Position])
         
@@ -55,17 +55,16 @@ class BouncingBalls extends LitElement {
 
         const eids = this.posQuery(world);
 
-        eids.forEach(eid => {
+        for(let i = 0; i < eids.length; i++){
+            const eid = eids[i];
             const x = this.Position.x[eid];
             const y = this.Position.y[eid];
 
             this.ctx.beginPath();
             this.ctx.arc(x, y, 5, 0, 2 * Math.PI);
-            this.ctx.fillStyle = 'blue';
+            this.ctx.fillStyle = this.color;
             this.ctx.fill();
-            this.ctx.stroke();
-        })
-    
+        }
     }
 
     shouldUpdate() {
