@@ -20,7 +20,3 @@ export const Heading = defineComponent({
 
 export const Speed = defineComponent({ value: Types.f32 });
 export const Bounds = defineComponent(Rectangle);
-
-export const BallGroup1 = defineComponent();
-export const BallGroup2 = defineComponent();
-export const BallGroup3 = defineComponent();

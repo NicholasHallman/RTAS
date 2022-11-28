@@ -10,9 +10,9 @@
     "example:server:cursor": "node ./src/backend/index.js --app ../../examples/cursor/cursor-example/index.js",
     "example:web:cursor": "web-dev-server --node-resolve --app-index ./examples/cursor/index.html --open",
     "example:cursor": "start npm run example:server:cursor && start npm run example:web:cursor",
-    "example:server:ball": "node ./src/backend/index.js --app ../../examples/ball-sim/plugin/index.js",
-    "example:web:ball": "web-dev-server --node-resolve --app-index ./examples/ball-sim/index.html --open",
-    "example:ball": "start npm run example:server:ball && start npm run example:web:ball",
+    "example:server:particle": "node ./src/backend/index.js --app ../../examples/particle-sim/plugin/index.js",
+    "example:web:particle": "web-dev-server --node-resolve --app-index ./examples/particle-sim/index.html --open",
+    "example:particle": "start npm run example:server:particle && start npm run example:web:particle",
     "demo": "web-dev-server --node-resolve --app-index demo/index.html --open"
   },
   "author": "Nicholas Hallman",

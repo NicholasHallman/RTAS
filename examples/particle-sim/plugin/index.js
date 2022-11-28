@@ -2,19 +2,19 @@ import { addComponent, addEntity } from "bitecs";
 import { RTASPlugin } from "../../../src/backend/plugin.js";
 import { Client, Networked } from "../../../src/backend/plugin/core/components.js";
 import { TICK } from "../../../src/backend/plugin/core/symbols.js";
-import { BallGroup1, BallGroup2, BallGroup3, Bounds, Heading, Position, Speed } from "./components.js";
-import { moveBalls, testThread } from "./systems.js";
+import { Bounds, Heading, Position, Speed } from "./components.js";
+import { moveParticles } from "./systems.js";
 
 let numConnected = -1;
 
-export default class BouncingBalls extends RTASPlugin {
+export default class Particles extends RTASPlugin {
 
     get schedule() {
         return TICK
     }
 
     get pipeline() {
-        return [moveBalls, testThread]
+        return [moveParticles]
     }
 
     start() {
@@ -28,9 +28,9 @@ export default class BouncingBalls extends RTASPlugin {
 
         this.registerNetworkedComponents({
             "Position": Position
-        })
+        });
 
-        // create balls
+        // create particles
         for(let group = 0; group < 3; group ++){
             for(let i = 0; i < 5; i++) {
                 const eid = addEntity(this.world);
@@ -38,18 +38,6 @@ export default class BouncingBalls extends RTASPlugin {
                 addComponent(this.world, Heading, eid);
                 addComponent(this.world, Speed, eid);
                 addComponent(this.world, Networked, eid);
-
-                switch(group) {
-                    case 0:
-                        addComponent(this.world, BallGroup1, eid);
-                        break;
-                    case 1:
-                        addComponent(this.world, BallGroup2, eid);
-                        break;
-                    case 2:
-                        addComponent(this.world, BallGroup3, eid);
-                        break;
-                }
                 
                 Position.x[eid] = 250;
                 Position.y[eid] = 250;
@@ -61,13 +49,12 @@ export default class BouncingBalls extends RTASPlugin {
                 Speed.value[eid] = (Math.random() * 2) + 0.5;
                 
                 this.addNetworkedComponents(eid, {
-                    groupMask: 2 ** group,
+                    groupMask: 2 ** group, // 00000001 00000010 00000100
                     components: [ Position ]
                 })
             }
         }
     }
-
 
     connect(restoreEid) {
         const eid = super.connect(restoreEid);

@@ -3,11 +3,10 @@ import { css, html, LitElement, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import { RTAS } from '../../../src/frontend/index.js';
 
-class BouncingBalls extends LitElement {
+class ParticleSim extends LitElement {
 
     static get properties() {
         return {
-            data: { attribute: false },
             color: { attribute: true }
         }
     }
@@ -37,7 +36,7 @@ class BouncingBalls extends LitElement {
 
     worldUpdate() {
         this.Position = this.rtas.getComponent("Position");
-        this.posQuery = defineQuery([this.Position])
+        this.posQuery = defineQuery([this.Position]);
         
         this.requestUpdate();
     }
@@ -80,4 +79,4 @@ class BouncingBalls extends LitElement {
     }
 }
 
-customElements.define('bouncing-balls', BouncingBalls);
+customElements.define('particle-sim', ParticleSim);

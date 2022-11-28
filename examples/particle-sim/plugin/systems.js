@@ -2,19 +2,19 @@ import { defineQuery } from "bitecs"
 import { threadedSystem } from "../../../src/backend/threaded.js";
 import { Bounds, Heading, Position, Speed } from "./components.js"
 
-const ballQuery = defineQuery([Position, Heading, Speed]);
+const particleQuery = defineQuery([Position, Heading, Speed]);
 const boundsQuery = defineQuery([Bounds]);
 
-export const moveBalls = world => {
-    const ballEntities = ballQuery(world);
+export const moveParticles = world => {
+    const particleEntities = particleQuery(world);
     const boundEid = boundsQuery(world)[0];
     const bx = Bounds.x[boundEid];
     const by = Bounds.y[boundEid];
     const width = Bounds.width[boundEid];
     const height = Bounds.height[boundEid];
 
-    for(let i = 0; i < ballEntities.length; i++){
-        const eid = ballEntities[i];
+    for(let i = 0; i < particleEntities.length; i++){
+        const eid = particleEntities[i];
         const x = Position.x[eid];
         const y = Position.y[eid];
         let ax = Heading.ax[eid];
@@ -37,8 +37,8 @@ export const moveBalls = world => {
         }
 
         if(changed) {
-            newX = Position.x[eid] = x + (ax * speed);
-            newY = Position.y[eid] = y + (ay * speed);
+            newX = x + (ax * speed);
+            newY = y + (ay * speed);
         }
 
         Position.x[eid] = newX;
